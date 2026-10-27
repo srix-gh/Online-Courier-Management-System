@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers | Courier CMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><span class="brand-icon">🚚</span><h2>Courier CMS</h2><p>Management System</p></div>
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">Main</span>
+            <a th:href="@{/dashboard}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+            <span class="nav-section-label">Modules</span>
+            <a th:href="@{/office}" class="nav-item"><span class="nav-icon">🏢</span> Offices</a>
+            <a th:href="@{/manager}" class="nav-item"><span class="nav-icon">👔</span> Managers</a>
+            <a th:href="@{/customer}" class="nav-item active"><span class="nav-icon">👥</span> Customers</a>
+            <a th:href="@{/shipment}" class="nav-item"><span class="nav-icon">📦</span> Shipments</a>
+            <a th:href="@{/delivery}" class="nav-item"><span class="nav-icon">🛵</span> Deliveries</a>
+            <a th:href="@{/payment}" class="nav-item"><span class="nav-icon">💳</span> Payments</a>
+            <span class="nav-section-label">Tools</span>
+            <a th:href="@{/shipment/track}" class="nav-item"><span class="nav-icon">🔍</span> Track Shipment</a>
+        </nav>
+        <div class="sidebar-footer"><a th:href="@{/logout}" class="nav-item" style="color:#f87171;"><span class="nav-icon">🚪</span> Logout</a></div>
+    </aside>
+    <div class="main-content">
+        <header class="topbar">
+            <div class="topbar-title"><h1>👥 Customers</h1><p>Manage registered customers</p></div>
+            <div class="topbar-right"><div class="topbar-user"><div class="avatar">A</div><span>Admin</span></div></div>
+        </header>
+        <main class="page-content">
+            <div th:if="${success}" class="alert alert-success">✅ <span th:text="${success}"></span></div>
+            <div th:if="${error}" class="alert alert-danger">⚠️ <span th:text="${error}"></span></div>
+
+            <div class="page-header">
+                <div><h1>All Customers</h1><p>Search and manage customer records</p></div>
+                <a th:href="@{/customer/add}" class="btn btn-primary" id="btn-add-customer">+ Register Customer</a>
+            </div>
+
+            <!-- Search -->
+            <form method="get" th:action="@{/customer}" class="search-bar">
+                <input type="text" name="search" id="customer-search" placeholder="Search by name or phone..."
+                       th:value="${search}" style="max-width:350px;">
+                <button type="submit" class="btn btn-primary btn-sm">🔍 Search</button>
+                <a th:if="${search}" th:href="@{/customer}" class="btn btn-secondary btn-sm">✖ Clear</a>
+            </form>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>#</th><th>Full Name</th><th>Phone</th><th>Email</th><th>Address</th><th>Actions</th></tr></thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(customers)}">
+                            <td colspan="6"><div class="empty-state"><div class="empty-icon">👥</div>
+                                <p th:if="${search}">No customers found for "<strong th:text="${search}"></strong>".</p>
+                                <p th:unless="${search}">No customers yet. <a th:href="@{/customer/add}">Register the first customer.</a></p>
+                            </div></td>
+                        </tr>
+                        <tr th:each="c : ${customers}">
+                            <td th:text="${c.id}"></td>
+                            <td class="fw-600" th:text="${c.fullName}"></td>
+                            <td th:text="${c.phone}"></td>
+                            <td th:text="${c.email ?: '-'}"></td>
+                            <td th:text="${c.address}"></td>
+                            <td>
+                                <div class="actions">
+                                    <a th:href="@{/customer/edit/{id}(id=${c.id})}" class="btn btn-warning btn-sm">✏️ Edit</a>
+                                    <form th:action="@{/customer/delete/{id}(id=${c.id})}" method="post" style="display:inline;"
+                                          onsubmit="return confirm('Delete this customer?')">
+                                        <button type="submit" class="btn btn-danger btn-sm">🗑️ Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>

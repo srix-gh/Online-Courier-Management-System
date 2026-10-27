@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offices | Courier CMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><span class="brand-icon">🚚</span><h2>Courier CMS</h2><p>Management System</p></div>
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">Main</span>
+            <a th:href="@{/dashboard}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+            <span class="nav-section-label">Modules</span>
+            <a th:href="@{/office}" class="nav-item active"><span class="nav-icon">🏢</span> Offices</a>
+            <a th:href="@{/manager}" class="nav-item"><span class="nav-icon">👔</span> Managers</a>
+            <a th:href="@{/customer}" class="nav-item"><span class="nav-icon">👥</span> Customers</a>
+            <a th:href="@{/shipment}" class="nav-item"><span class="nav-icon">📦</span> Shipments</a>
+            <a th:href="@{/delivery}" class="nav-item"><span class="nav-icon">🛵</span> Deliveries</a>
+            <a th:href="@{/payment}" class="nav-item"><span class="nav-icon">💳</span> Payments</a>
+            <span class="nav-section-label">Tools</span>
+            <a th:href="@{/shipment/track}" class="nav-item"><span class="nav-icon">🔍</span> Track Shipment</a>
+        </nav>
+        <div class="sidebar-footer"><a th:href="@{/logout}" class="nav-item" style="color:#f87171;"><span class="nav-icon">🚪</span> Logout</a></div>
+    </aside>
+    <div class="main-content">
+        <header class="topbar">
+            <div class="topbar-title"><h1>🏢 Offices</h1><p>Manage courier office locations</p></div>
+            <div class="topbar-right"><div class="topbar-user"><div class="avatar">A</div><span>Admin</span></div></div>
+        </header>
+        <main class="page-content">
+            <div th:if="${success}" class="alert alert-success">✅ <span th:text="${success}"></span></div>
+            <div th:if="${error}" class="alert alert-danger">⚠️ <span th:text="${error}"></span></div>
+
+            <div class="page-header">
+                <div><h1>All Offices</h1><p>View and manage all courier offices</p></div>
+                <a th:href="@{/office/add}" class="btn btn-primary" id="btn-add-office">+ Add Office</a>
+            </div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>#</th><th>Office Name</th><th>Address</th><th>City</th><th>Contact</th><th>Actions</th></tr></thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(offices)}">
+                            <td colspan="6"><div class="empty-state"><div class="empty-icon">🏢</div><p>No offices found. <a th:href="@{/office/add}">Add the first office.</a></p></div></td>
+                        </tr>
+                        <tr th:each="o, stat : ${offices}">
+                            <td th:text="${o.id}"></td>
+                            <td class="fw-600" th:text="${o.officeName}"></td>
+                            <td th:text="${o.address}"></td>
+                            <td th:text="${o.city}"></td>
+                            <td th:text="${o.contactNumber}"></td>
+                            <td>
+                                <div class="actions">
+                                    <a th:href="@{/office/edit/{id}(id=${o.id})}" class="btn btn-warning btn-sm">✏️ Edit</a>
+                                    <form th:action="@{/office/delete/{id}(id=${o.id})}" method="post" style="display:inline;"
+                                          onsubmit="return confirm('Delete this office?')">
+                                        <button type="submit" class="btn btn-danger btn-sm">🗑️ Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>

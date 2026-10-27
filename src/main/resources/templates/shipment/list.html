@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipments | Courier CMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><span class="brand-icon">🚚</span><h2>Courier CMS</h2><p>Management System</p></div>
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">Main</span>
+            <a th:href="@{/dashboard}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+            <span class="nav-section-label">Modules</span>
+            <a th:href="@{/office}" class="nav-item"><span class="nav-icon">🏢</span> Offices</a>
+            <a th:href="@{/manager}" class="nav-item"><span class="nav-icon">👔</span> Managers</a>
+            <a th:href="@{/customer}" class="nav-item"><span class="nav-icon">👥</span> Customers</a>
+            <a th:href="@{/shipment}" class="nav-item active"><span class="nav-icon">📦</span> Shipments</a>
+            <a th:href="@{/delivery}" class="nav-item"><span class="nav-icon">🛵</span> Deliveries</a>
+            <a th:href="@{/payment}" class="nav-item"><span class="nav-icon">💳</span> Payments</a>
+            <span class="nav-section-label">Tools</span>
+            <a th:href="@{/shipment/track}" class="nav-item"><span class="nav-icon">🔍</span> Track Shipment</a>
+        </nav>
+        <div class="sidebar-footer"><a th:href="@{/logout}" class="nav-item" style="color:#f87171;"><span class="nav-icon">🚪</span> Logout</a></div>
+    </aside>
+    <div class="main-content">
+        <header class="topbar">
+            <div class="topbar-title"><h1>📦 Shipments</h1><p>Manage all courier shipments</p></div>
+            <div class="topbar-right"><div class="topbar-user"><div class="avatar">A</div><span>Admin</span></div></div>
+        </header>
+        <main class="page-content">
+            <div th:if="${success}" class="alert alert-success">✅ <span th:text="${success}"></span></div>
+            <div th:if="${error}" class="alert alert-danger">⚠️ <span th:text="${error}"></span></div>
+
+            <div class="page-header">
+                <div><h1>All Shipments</h1><p>Track and manage courier shipments</p></div>
+                <div style="display:flex; gap:0.5rem;">
+                    <a th:href="@{/shipment/track}" class="btn btn-secondary">🔍 Track</a>
+                    <a th:href="@{/shipment/add}" class="btn btn-primary" id="btn-add-shipment">+ New Shipment</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>Tracking #</th><th>Customer</th><th>Source Office</th><th>Destination</th><th>Date</th><th>Weight</th><th>Charge (₹)</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(shipments)}">
+                            <td colspan="9"><div class="empty-state"><div class="empty-icon">📦</div><p>No shipments yet. <a th:href="@{/shipment/add}">Create the first shipment.</a></p></div></td>
+                        </tr>
+                        <tr th:each="s : ${shipments}">
+                            <td><a th:href="@{/shipment/view/{id}(id=${s.id})}" style="font-family:monospace; font-size:0.8rem;" th:text="${s.trackingNumber}"></a></td>
+                            <td th:text="${s.customer.fullName}"></td>
+                            <td th:text="${s.sourceOffice.officeName}"></td>
+                            <td th:text="${s.destinationAddress}"></td>
+                            <td th:text="${s.shipmentDate}"></td>
+                            <td th:text="${s.weight + ' kg'}"></td>
+                            <td th:text="'₹' + ${s.courierCharge}"></td>
+                            <td>
+                                <span th:switch="${s.status.name()}">
+                                    <span th:case="'BOOKED'" class="badge badge-primary">📋 Booked</span>
+                                    <span th:case="'IN_TRANSIT'" class="badge badge-warning">🚛 In Transit</span>
+                                    <span th:case="'OUT_FOR_DELIVERY'" class="badge badge-info">🛵 Out for Delivery</span>
+                                    <span th:case="'DELIVERED'" class="badge badge-success">✅ Delivered</span>
+                                    <span th:case="*" class="badge badge-gray" th:text="${s.status}"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <a th:href="@{/shipment/view/{id}(id=${s.id})}" class="btn btn-secondary btn-sm">👁️</a>
+                                    <a th:href="@{/shipment/edit/{id}(id=${s.id})}" class="btn btn-warning btn-sm">✏️</a>
+                                    <form th:action="@{/shipment/delete/{id}(id=${s.id})}" method="post" style="display:inline;"
+                                          onsubmit="return confirm('Delete this shipment?')">
+                                        <button type="submit" class="btn btn-danger btn-sm">🗑️</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>

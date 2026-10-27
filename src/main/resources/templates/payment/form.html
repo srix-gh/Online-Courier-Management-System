@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Payment | Courier CMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><span class="brand-icon">🚚</span><h2>Courier CMS</h2><p>Management System</p></div>
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">Main</span>
+            <a th:href="@{/dashboard}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+            <span class="nav-section-label">Modules</span>
+            <a th:href="@{/office}" class="nav-item"><span class="nav-icon">🏢</span> Offices</a>
+            <a th:href="@{/manager}" class="nav-item"><span class="nav-icon">👔</span> Managers</a>
+            <a th:href="@{/customer}" class="nav-item"><span class="nav-icon">👥</span> Customers</a>
+            <a th:href="@{/shipment}" class="nav-item"><span class="nav-icon">📦</span> Shipments</a>
+            <a th:href="@{/delivery}" class="nav-item"><span class="nav-icon">🛵</span> Deliveries</a>
+            <a th:href="@{/payment}" class="nav-item active"><span class="nav-icon">💳</span> Payments</a>
+            <span class="nav-section-label">Tools</span>
+            <a th:href="@{/shipment/track}" class="nav-item"><span class="nav-icon">🔍</span> Track Shipment</a>
+        </nav>
+        <div class="sidebar-footer"><a th:href="@{/logout}" class="nav-item" style="color:#f87171;"><span class="nav-icon">🚪</span> Logout</a></div>
+    </aside>
+    <div class="main-content">
+        <header class="topbar">
+            <div class="topbar-title"><h1>💳 Record Payment</h1><p>Create a payment record for a shipment</p></div>
+            <div class="topbar-right"><div class="topbar-user"><div class="avatar">A</div><span>Admin</span></div></div>
+        </header>
+        <main class="page-content">
+            <div class="page-header"><div></div><a th:href="@{/payment}" class="btn btn-secondary">← Back to Payments</a></div>
+            <div class="card" style="max-width: 700px;">
+                <div class="card-header"><h2>New Payment Record</h2></div>
+                <div class="card-body">
+                    <form th:action="@{/payment/add}" th:object="${payment}" method="post" id="payment-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="shipmentId">Shipment *</label>
+                                <select id="shipmentId" name="shipmentId">
+                                    <option value="">-- Select Shipment --</option>
+                                    <option th:each="s : ${shipments}"
+                                            th:value="${s.id}"
+                                            th:text="${s.trackingNumber + ' (₹' + s.courierCharge + ')'}"
+                                            th:selected="${selectedShipmentId != null && selectedShipmentId == s.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="amount">Amount (₹) *</label>
+                                <input type="number" id="amount" th:field="*{amount}" step="0.01" min="1"
+                                       placeholder="Courier charge amount">
+                                <span class="field-error" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="paymentStatus">Payment Status</label>
+                                <select id="paymentStatus" th:field="*{paymentStatus}">
+                                    <option value="PENDING">Pending</option>
+                                    <option value="PAID">Paid</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="paymentMethod">Payment Method</label>
+                                <select id="paymentMethod" th:field="*{paymentMethod}">
+                                    <option value="">-- Select Method --</option>
+                                    <option th:each="m : ${methods}" th:value="${m}" th:text="${m}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1.5rem; display:flex; gap:0.75rem;">
+                            <button type="submit" class="btn btn-primary" id="btn-submit-payment">💳 Record Payment</button>
+                            <a th:href="@{/payment}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>
