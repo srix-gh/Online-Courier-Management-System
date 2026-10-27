@@ -1,0 +1,6 @@
+target/
+node_modules/
+.env
+*.mv.db
+*.lock.db
+*.trace.db
