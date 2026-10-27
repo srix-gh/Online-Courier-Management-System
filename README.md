@@ -1,6 +1,6 @@
 # 🚚 Online Courier Management System
 
-**B.Tech Java Lab Micro-Project** — A complete web-based courier management system built with Spring Boot, Spring MVC, Thymeleaf, and H2 Database.
+ A complete web-based courier management system built with Spring Boot, Spring MVC, Thymeleaf, and H2 Database.
 
 ---
 
